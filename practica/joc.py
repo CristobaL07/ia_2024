@@ -133,7 +133,7 @@ class Casella:
 
     def simplifica(self):
         simple = " "
-        if (
+        if not (
             self.__tipus is TipusCas.PARET
             or self.is_desti()
             or self.__agent is not None
@@ -300,6 +300,7 @@ class Laberint(joc.Joc):
                     self.__parets.add(pos_updated)
                 else:
                     msg = f"Acció no possible a la casella {pos_updated}"
+                    print(f"De {pos_original} a {pos_updated}")
                     warnings.warn(msg)
 
     def _draw(self) -> None:
