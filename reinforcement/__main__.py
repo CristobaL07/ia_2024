@@ -22,16 +22,9 @@ def main():
         stop_at_convergence=True,
     )
 
-    x = random.randint(0, 7)
-    y = random.randint(0, 7)
-
-    print(f"Posicion: ({x}, {y}) \n")
-
-    game.reset((x,y))
+    game.reset()
     game.set_agent([agent])
     game.comencar()
-
-
 
 if __name__ == "__main__":
     main()

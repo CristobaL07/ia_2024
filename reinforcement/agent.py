@@ -223,14 +223,25 @@ class AgentQ(AbstractModel):
         final_exploration_rate = 0.1
         exploration_decay = 0.99
 
+        x = random.randint(0,7)
+        y = random.randint(0,7)
+
+        """poner las celdas validas para que los resets sean eficientes"""
+        status = None
 
         # training starts here
         "Loop for each episode:"
         for episode in range(1, episodes + 1):
 
             exploration_rate = max(final_exploration_rate, initial_exploration_rate * (exploration_decay ** episode))
+
+            if status is not None and status.name == "WIN":
+                x = random.randint(0, 7)
+                y = random.randint(0, 7)
+
             "Initialize S"
-            state = self.environment.reset()
+            state = self.environment.reset((x,y))
+            """print(f"{x}, {y}")"""
 
             "Choose A from S using policy derived from Q (using epsilon-greedy)"
             # choose action epsilon greedy
