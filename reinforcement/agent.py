@@ -1,5 +1,7 @@
 import logging
 import random
+from random import Random
+from tkinter.tix import INTEGER
 
 import numpy as np
 
@@ -217,47 +219,73 @@ class AgentQ(AbstractModel):
 
         # start_time = datetime.now()
 
+        initial_exploration_rate = exploration_rate
+        final_exploration_rate = 0.1
+        exploration_decay = 0.99
+
+
         # training starts here
+        "Loop for each episode:"
         for episode in range(1, episodes + 1):
 
+            exploration_rate = max(final_exploration_rate, initial_exploration_rate * (exploration_decay ** episode))
+            "Initialize S"
             state = self.environment.reset()
 
-            while True:
-                # choose action epsilon greedy
-                if np.random.random() < exploration_rate:
-                    action = random.choice(self.environment.actions)
-                else:
-                    action = self.predict(state)
+            "Choose A from S using policy derived from Q (using epsilon-greedy)"
+            # choose action epsilon greedy
+            if np.random.random() < exploration_rate:
+                action = random.choice(self.environment.actions)
+            else:
+                action = self.predict(state)
 
+            "(Ensure certainty)"
+            if (
+                    state,
+                    action,
+            ) not in self.Q.keys():  # ensure value exists for (state, action)
+                # to avoid a KeyError
+                self.Q[(state, action)] = 0.0
+
+            while True:
+
+                "Take action A, observe R, S' "
                 next_state, reward, status = self.environment._aplica(action)
                 cumulative_reward += reward
 
+                "Choose A' from S' using policy derived from Q (using epsilon-greedy)"
+                # choose action epsilon greedy
+                if np.random.random() < exploration_rate:
+                    next_action = random.choice(self.environment.actions)
+                else:
+                    next_action = self.predict(next_state)
+
+                "(Ensure certainty)"
                 if (
-                        state,
-                        action,
+                        next_state,
+                        next_action,
                 ) not in self.Q.keys():  # ensure value exists for (state, action)
                     # to avoid a KeyError
-                    self.Q[(state, action)] = 0.0
+                    self.Q[(next_state, next_action)] = 0.0
 
-                # FORA POLÍTICA!
-                max_next_Q = 0
-                for a in self.environment.actions:
-                    if (next_state, a) in self.Q and self.Q[
-                        (next_state, a)
-                    ] > max_next_Q:
-                        max_next_Q = self.Q[(next_state, a)]
 
+                "Q(S,A) <- Q(S,A) + alpha[R + gamma * Q(S',A') - Q(S,A)]"
                 self.Q[(state, action)] = self.Q[(state, action)] + learning_rate * (
-                        reward + discount * max_next_Q - self.Q[(state, action)]
+                        reward + discount * self.Q[(next_state,next_action)] - self.Q[(state, action)]
                 )
 
+                "(until S is terminal)"
                 if status in (
                         Status.WIN,
                         Status.LOSE,
                 ):  # terminal state reached, stop episode
                     break
 
+                "S <- S'"
                 state = next_state
+
+                "A <- A'"
+                action = next_action
 
             cumulative_reward_history.append(cumulative_reward)
 
@@ -266,16 +294,6 @@ class AgentQ(AbstractModel):
                     episode, episodes, status.name, exploration_rate
                 )
             )
-        """
-            if episode % check_convergence_every == 0:
-                # check if the current model does win from all starting cells
-                # only possible if there is a finite number of starting states
-                w_all, win_rate = self.environment.check_win_all(self)
-                win_history.append((episode, win_rate))
-                if w_all is True and stop_at_convergence is True:
-                    logging.info("won from all start cells, stop learning")
-                    break
-        """
 
         logging.info("episodes: {:d}".format(episode))
 

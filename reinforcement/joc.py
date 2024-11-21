@@ -1,4 +1,5 @@
 from enum import Enum, IntEnum
+from math import trunc
 from xml.sax.handler import property_dom_node
 
 import numpy as np

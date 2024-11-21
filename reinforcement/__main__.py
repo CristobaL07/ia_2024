@@ -1,4 +1,5 @@
 import logging
+import random
 
 from reinforcement.agent import AgentQ
 from reinforcement.joc import Laberint
@@ -21,9 +22,15 @@ def main():
         stop_at_convergence=True,
     )
 
-    game.reset()
+    x = random.randint(0, 7)
+    y = random.randint(0, 7)
+
+    print(f"Posicion: ({x}, {y}) \n")
+
+    game.reset((x,y))
     game.set_agent([agent])
     game.comencar()
+
 
 
 if __name__ == "__main__":
