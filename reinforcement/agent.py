@@ -62,6 +62,7 @@ class AgentQ(AbstractModel):
         actions = np.nonzero(q == np.max(q))[
             0
         ]  # get index of the action(s) with the max value
+        #print(f"Acciones de mayor indice---> {actions}")
         return random.choice(actions)
 
     def pinta(self, display) -> None:
@@ -218,15 +219,7 @@ class AgentQ(AbstractModel):
         win_history = []
 
         # start_time = datetime.now()
-
-        initial_exploration_rate = exploration_rate
-        final_exploration_rate = 0.1
-        exploration_decay = 0.99
-
-        x = random.randint(0,7)
-        y = random.randint(0,7)
-
-        """poner las celdas validas para que los resets sean eficientes"""
+        # training starts here
         maze = np.array(
             [
                 [0, 1, 0, 0, 0, 0, 0, 0],
@@ -238,32 +231,15 @@ class AgentQ(AbstractModel):
                 [0, 1, 1, 0, 0, 0, 0, 0],
                 [0, 1, 0, 0, 0, 1, 0, 0],
             ]
-        )
-        disponibles = np.sum(maze == 0)
-        visited = set()
-        status = None
+        )  # 0 = free, 1 = occupied
+        x = 0
+        y = 0
 
-        # training starts here
         "Loop for each episode:"
         for episode in range(1, episodes + 1):
 
-            if status is not None and status.name == "WIN":
-                x = random.randint(0, 7)
-                y = random.randint(0, 7)
-                if len(visited) < disponibles:
-                    while (x, y) in visited or maze[y, x] == 1:
-                        x = random.randint(0, 7)
-                        y = random.randint(0, 7)
-                else:
-                    while maze[y, x] == 1:
-                        x = random.randint(0, 7)
-                        y = random.randint(0, 7)
-
             "Initialize S"
             state = self.environment.reset((x,y))
-            visited.add((x,y))
-            """print(f"{x}, {y}")
-            print(len(visited))"""
 
             "Choose A from S using policy derived from Q (using epsilon-greedy)"
             # choose action epsilon greedy
@@ -323,10 +299,37 @@ class AgentQ(AbstractModel):
             cumulative_reward_history.append(cumulative_reward)
 
             logging.info(
-                "episode: {:d}/{:d} | status: {:4s} | e: {:.5f}".format(
-                    episode, episodes, status.name, exploration_rate
+                "episode: {:d}/{:d} | status: {:4s} | e: {:.5f} | (x,y): ({:d},{:d})".format(
+                    episode, episodes, status.name, exploration_rate, x, y
                 )
             )
+
+            #Actualizar casilla de entrenamiento
+            if y < 7:
+                if x < 7:
+                    x = x + 1
+                else:
+                    x = 0
+                    y = y + 1
+            else:
+                if x < 7:
+                    x = x + 1
+                else:
+                    x = 0
+                    y = 0
+            while maze[y,x] == 1:
+                if y < 7:
+                    if x < 7:
+                        x = x + 1
+                    else:
+                        x = 0
+                        y = y + 1
+                else:
+                    if x < 7:
+                        x = x + 1
+                    else:
+                        x = 0
+                        y = 0
 
         logging.info("episodes: {:d}".format(episode))
 

@@ -147,14 +147,19 @@ class Laberint(joc.Joc):
             )  # cannot move anywhere, force end of game
 
         elif action in possible_actions:
+
             col, row = self.__current_cell
             if action == Action.MOVE_LEFT:
+                #print(f"Accion que se va a realizar--> {'←'}")
                 col -= 1
             elif action == Action.MOVE_UP:
+                #print(f"Accion que se va a realizar--> {'↑'}")
                 row -= 1
             if action == Action.MOVE_RIGHT:
+                #(f"Accion que se va a realizar--> {'→'}")
                 col += 1
             elif action == Action.MOVE_DOWN:
+                #print(f"Accion que se va a realizar--> {'↓'}")
                 row += 1
 
             self.__previous_cell = self.__current_cell
