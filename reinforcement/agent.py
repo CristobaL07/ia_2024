@@ -227,6 +227,20 @@ class AgentQ(AbstractModel):
         y = random.randint(0,7)
 
         """poner las celdas validas para que los resets sean eficientes"""
+        maze = np.array(
+            [
+                [0, 1, 0, 0, 0, 0, 0, 0],
+                [0, 1, 0, 1, 0, 1, 0, 0],
+                [0, 1, 0, 1, 1, 0, 1, 0],
+                [0, 1, 0, 1, 0, 0, 0, 0],
+                [0, 1, 0, 1, 0, 1, 0, 0],
+                [0, 0, 0, 1, 0, 1, 1, 1],
+                [0, 1, 1, 0, 0, 0, 0, 0],
+                [0, 1, 0, 0, 0, 1, 0, 0],
+            ]
+        )
+        disponibles = np.sum(maze == 0)
+        visited = set()
         status = None
 
         # training starts here
@@ -238,10 +252,20 @@ class AgentQ(AbstractModel):
             if status is not None and status.name == "WIN":
                 x = random.randint(0, 7)
                 y = random.randint(0, 7)
+                if len(visited) < disponibles:
+                    while (x, y) in visited or maze[y, x] == 1:
+                        x = random.randint(0, 7)
+                        y = random.randint(0, 7)
+                else:
+                    while maze[y, x] == 1:
+                        x = random.randint(0, 7)
+                        y = random.randint(0, 7)
 
             "Initialize S"
             state = self.environment.reset((x,y))
-            """print(f"{x}, {y}")"""
+            visited.add((x,y))
+            """print(f"{x}, {y}")
+            print(len(visited))"""
 
             "Choose A from S using policy derived from Q (using epsilon-greedy)"
             # choose action epsilon greedy

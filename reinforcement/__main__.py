@@ -22,7 +22,7 @@ def main():
         stop_at_convergence=True,
     )
 
-    game.reset((2,0))
+    game.reset((0,0))
     game.set_agent([agent])
     game.comencar()
 
