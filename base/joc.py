@@ -61,6 +61,8 @@ class Joc:
             self._draw()
             if not self.__game_finished:
                 self._logica(self._agents)
+            else:
+                break
             pygame.display.flip()
 
     @abc.abstractmethod

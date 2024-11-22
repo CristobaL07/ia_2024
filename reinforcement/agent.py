@@ -247,8 +247,6 @@ class AgentQ(AbstractModel):
         "Loop for each episode:"
         for episode in range(1, episodes + 1):
 
-            exploration_rate = max(final_exploration_rate, initial_exploration_rate * (exploration_decay ** episode))
-
             if status is not None and status.name == "WIN":
                 x = random.randint(0, 7)
                 y = random.randint(0, 7)
@@ -266,7 +264,6 @@ class AgentQ(AbstractModel):
             visited.add((x,y))
             """print(f"{x}, {y}")
             print(len(visited))"""
-            print(visited)
 
             "Choose A from S using policy derived from Q (using epsilon-greedy)"
             # choose action epsilon greedy
