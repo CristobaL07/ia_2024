@@ -22,7 +22,18 @@ def main():
         stop_at_convergence=True,
     )
 
-    game.reset((0,0))
+    x = random.randint(0, 7)
+    y = random.randint(0, 7)
+
+    maze = game.maze
+
+    while maze[y, x] == 1:
+        x = random.randint(0, 7)
+        y = random.randint(0, 7)
+
+    print(f"Posicion: ({x},{y}) \n")
+
+    game.reset((x,y))
     game.set_agent([agent])
     game.comencar()
 

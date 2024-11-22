@@ -266,6 +266,7 @@ class AgentQ(AbstractModel):
             visited.add((x,y))
             """print(f"{x}, {y}")
             print(len(visited))"""
+            print(visited)
 
             "Choose A from S using policy derived from Q (using epsilon-greedy)"
             # choose action epsilon greedy
