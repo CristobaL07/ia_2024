@@ -16,7 +16,7 @@ def main():
     agent = AgentQ(game)
     h, w, _ = agent.train(
         discount=0.90,
-        exploration_rate=0,
+        exploration_rate=0.10,
         learning_rate=0.6,
         episodes=1000,
         stop_at_convergence=True,

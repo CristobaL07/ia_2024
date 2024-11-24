@@ -241,12 +241,9 @@ class AgentQ(AbstractModel):
             "Initialize S"
             state = self.environment.reset((x,y))
 
-            "Choose A from S using policy derived from Q (using epsilon-greedy)"
+            "Choose A from S using policy derived from Q (using greedy)"
             # choose action epsilon greedy
-            if np.random.random() < exploration_rate:
-                action = random.choice(self.environment.actions)
-            else:
-                action = self.predict(state)
+            action = self.predict(state)
 
             "(Ensure certainty)"
             if (
@@ -262,12 +259,9 @@ class AgentQ(AbstractModel):
                 next_state, reward, status = self.environment._aplica(action)
                 cumulative_reward += reward
 
-                "Choose A' from S' using policy derived from Q (using epsilon-greedy)"
+                "Choose A' from S' using policy derived from Q (using greedy)"
                 # choose action epsilon greedy
-                if np.random.random() < exploration_rate:
-                    next_action = random.choice(self.environment.actions)
-                else:
-                    next_action = self.predict(next_state)
+                next_action = self.predict(next_state)
 
                 "(Ensure certainty)"
                 if (
