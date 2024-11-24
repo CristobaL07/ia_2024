@@ -57,7 +57,7 @@ class Laberint(joc.Joc):
         maze=None,
         start_cell=(0, 0),
         exit_cell=(6, 6),
-        mostra_cami=True,
+        mostra_cami=False,
     ):
         """Create a new maze game
 

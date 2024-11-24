@@ -53,7 +53,7 @@ class Joc:
         pygame.init()
 
         while True:
-            fps_controller.tick(50)
+            fps_controller.tick(1)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()

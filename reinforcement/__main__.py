@@ -32,7 +32,7 @@ def main():
                 #print(f"Posicion PROHIBIDA: ({x},{y}) \n")
                 continue
 
-            print(f"Posicion: ({x},{y}) \n")
+            #print(f"Posicion: ({x},{y}) \n")
             game.reset((x, y))
             game.set_agent([agent])
             game.comencar()
